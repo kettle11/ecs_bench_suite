@@ -51,12 +51,14 @@ impl Benchmark {
 
     pub fn run(&mut self) {
         self.0.run(
-            |velocities: View<Velocity>, mut positions: ViewMut<Position>| {
-                (&velocities, &mut positions)
-                    .iter()
-                    .for_each(|(velocity, position)| {
+            |velocities: View<Velocity>,
+             mut positions: ViewMut<Position>,
+             rotations: View<Rotation>| {
+                (&velocities, &mut positions, &rotations).iter().for_each(
+                    |(velocity, position, _)| {
                         position.0 += velocity.0;
-                    })
+                    },
+                )
             },
         );
     }

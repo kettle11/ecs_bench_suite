@@ -15,7 +15,10 @@ struct Rotation(Vector3<f32>);
 #[derive(Copy, Clone)]
 struct Velocity(Vector3<f32>);
 
-pub struct Benchmark(World, Query<(Read<Velocity>, Write<Position>)>);
+pub struct Benchmark(
+    World,
+    Query<(Read<Velocity>, Write<Position>, Read<Rotation>)>,
+);
 
 impl Benchmark {
     pub fn new() -> Self {
@@ -32,13 +35,13 @@ impl Benchmark {
         );
         world.pack(PackOptions::force());
 
-        let query = <(Read<Velocity>, Write<Position>)>::query();
+        let query = <(Read<Velocity>, Write<Position>, Read<Rotation>)>::query();
 
         Self(world, query)
     }
 
     pub fn run(&mut self) {
-        self.1.for_each_mut(&mut self.0, |(velocity, position)| {
+        self.1.for_each_mut(&mut self.0, |(velocity, position, _)| {
             position.0 += velocity.0;
         });
     }
